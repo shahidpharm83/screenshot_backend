@@ -14,7 +14,9 @@ if (!fs.existsSync(IMAGES_DIR)) {
 
 // Start WebSocket server
 const wss = new WebSocket.Server({ port: PORT_WS }, () => {
-  console.log(`WebSocket server is running on ws://localhost:${PORT_WS}`);
+  console.log(
+    `WebSocket server is running on ws://https://screenshot-backend-ydau.onrender.com:${PORT_WS}`
+  );
 });
 
 wss.on("connection", (ws) => {
@@ -49,7 +51,7 @@ const app = express();
 app.get("/screenshots", (req, res) => {
   const files = fs.readdirSync(IMAGES_DIR).map((file) => ({
     name: file,
-    url: `http://localhost:${PORT_HTTP}/screenshots/${file}`,
+    url: `https://screenshot-backend-ydau.onrender.com:${PORT_HTTP}/screenshots/${file}`,
   }));
   res.json(files);
 });
@@ -59,5 +61,7 @@ app.use("/screenshots", express.static(IMAGES_DIR));
 
 // Start the HTTP server
 app.listen(PORT_HTTP, () => {
-  console.log(`HTTP server is running on http://localhost:${PORT_HTTP}`);
+  console.log(
+    `HTTP server is running on https://screenshot-backend-ydau.onrender.com:${PORT_HTTP}`
+  );
 });
