@@ -1,33 +1,35 @@
-const WebSocket = require("ws");
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 
-const PORT_WS = 8080;
-
-const wss = new WebSocket.Server({ port: PORT_WS }, () => {
-  console.log(
-    `WebSocket server is running on wss://screenshot-backend-ydau.onrender.com:${PORT_WS}`
-  );
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "https://screenshot-backend-ydau.onrender.com", // Adjust as needed for production
+    methods: ["GET", "POST"],
+  },
 });
 
-wss.on("connection", (ws) => {
-  console.log("Client connected");
+// Handle connection events
+io.on("connection", (socket) => {
+  console.log("A client connected:", socket.id);
 
-  ws.on("message", (message) => {
-    try {
-      const data = JSON.parse(message);
-      if (data.type === "screenshot") {
-        // Broadcast the screenshot to all connected clients
-        wss.clients.forEach((client) => {
-          if (client !== ws && client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(data));
-          }
-        });
-      }
-    } catch (error) {
-      console.error("Error processing message:", error);
-    }
+  // Listen for screenshot events
+  socket.on("screenshot", (data) => {
+    console.log("Received screenshot:", data);
+    // Broadcast the screenshot to all other clients
+    socket.broadcast.emit("view_screenshot", data);
   });
 
-  ws.on("close", () => {
-    console.log("Client disconnected");
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
   });
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
