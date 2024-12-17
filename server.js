@@ -1,28 +1,19 @@
 const WebSocket = require("ws");
+const PORT = process.env.PORT || 443;
 
-const PORT_WS = 8080;
-
-const wss = new WebSocket.Server({ port: PORT_WS }, () => {
-  console.log(`WebSocket server is running on ws://localhost:${PORT_WS}`);
+const wss = new WebSocket.Server({ port: PORT }, () => {
+  console.log(
+    `WebSocket server is running on wss://screenshot-backend-ydau.onrender.com:${PORT}`
+  );
 });
 
 wss.on("connection", (ws) => {
   console.log("Client connected");
 
   ws.on("message", (message) => {
-    try {
-      const data = JSON.parse(message);
-      if (data.type === "screenshot") {
-        // Broadcast the screenshot to all connected clients
-        wss.clients.forEach((client) => {
-          if (client !== ws && client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(data));
-          }
-        });
-      }
-    } catch (error) {
-      console.error("Error processing message:", error);
-    }
+    console.log(`Received message: ${message}`);
+    // Echo the message back to the client (or handle it as needed)
+    ws.send(`Server received: ${message}`);
   });
 
   ws.on("close", () => {
