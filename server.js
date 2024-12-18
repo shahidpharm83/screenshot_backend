@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
 
   // Listen for screenshot events
   socket.on("screenshot", (data) => {
-    console.log("Received screenshot:", data);
+    console.log("Received screenshot");
     // Broadcast the screenshot to all other clients
     socket.broadcast.emit("view_screenshot", data);
   });
