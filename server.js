@@ -24,7 +24,7 @@ io.on("connection", (socket) => {
 
   // Handle disconnection
   socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
+    console.log("Client disconnected from server:", socket.id);
   });
 });
 
