@@ -17,14 +17,14 @@ io.on("connection", (socket) => {
 
   // Listen for screenshot events
   socket.on("screenshot", (data) => {
-    console.log("Received screenshot");
+    console.log("Received screenshot:", data);
     // Broadcast the screenshot to all other clients
     socket.broadcast.emit("view_screenshot", data);
   });
 
   // Handle disconnection
   socket.on("disconnect", () => {
-    console.log("Client disconnected from server:", socket.id);
+    console.log("Client disconnected:", socket.id);
   });
 });
 
